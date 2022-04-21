@@ -1,0 +1,51 @@
+---
+title: "Class Project - Matthis"
+author: "Chris Matthis"
+date: "4/19/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message = FALSE)
+```
+
+
+```{r }
+# Load Libraries
+library(readr)
+library(tidyverse)
+```
+
+# Counts and Construct Example
+
+```{r}
+# Load Data
+class_dataset <- read_csv("class_dataset.csv")
+View(class_dataset)
+```
+
+## Counts of survey takers per network by year
+```{r}
+# Make a visual to show number in each network over years
+class_dataset %>%
+  count(network, year) %>%
+  ggplot(aes(x=network, y =n)) +
+  geom_col() +
+  facet_grid(~year)
+```
+
+
+## Membership Composition Construct Scores
+
+```{r}
+# Make a visual to show composite score of so_part_mc_5, so_part_mc_6, so_part_mc_7. 
+mc_composite <- class_dataset %>% rowwise()%>%mutate(mc=mean(c(so_part_mc_5, so_part_mc_6, so_part_mc_7)))
+
+
+ggplot(data=mc_composite, aes(x=network, y=mc))+
+  geom_boxplot()+
+  coord_flip()+
+  geom_jitter(alpha=.2)+
+  facet_grid(~year)+
+  ggtitle("Membership Composition scores over time")
+```
